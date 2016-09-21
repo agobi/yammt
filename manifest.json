@@ -1,6 +1,7 @@
 {
   "name": "money",
   "short_name": "money",
+  "description": "Asset tracking",
   "start_url": "/",
   "display": "standalone"
 }

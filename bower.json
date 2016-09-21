@@ -2,7 +2,16 @@
   "name": "money",
   "main": "index.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^1.4.0",
+    "polymerfire": "^0.9.7",
+    "paper-input": "^1.1.19",
+    "paper-drawer-panel": "^1.0.10",
+    "iron-pages": "^1.0.8",
+    "paper-dialog": "^1.1.0",
+    "paper-listbox": "^1.1.2",
+    "paper-dropdown-menu": "^1.4.1",
+    "paper-item": "^1.2.1",
+    "paper-menu": "^1.2.2"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

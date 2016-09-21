@@ -2,14 +2,23 @@
 
 <html>
   <head>
-    <title>money</title>
+    <title>money3</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="/manifest.json">
     <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="/src/money-app/money-app.html">
+    <link rel="import" href="/src/money-app.html">
+    <link rel="import" href="/bower_components/polymerfire/polymerfire.html">
   </head>
   <body>
-    <money-app></money-app>
+    <firebase-app
+      name="money"
+      auth-domain="money-e5e3e.firebaseapp.com"
+      database-url="https://money-e5e3e.firebaseio.com"
+        log="true"
+      api-key="AIzaSyBY1BHdI5txu1rLBvk_mlIELpo6GDTHox8">
+    </firebase-app>
+
+    <money-app>Loading...</money-app>
   </body>
 </html>
