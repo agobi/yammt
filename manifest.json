@@ -1,6 +1,6 @@
 {
-  "name": "money",
-  "short_name": "money",
+  "name": "Yet Another Money Tracking Tool",
+  "short_name": "yamtt",
   "description": "Asset tracking",
   "start_url": "/",
   "display": "standalone"

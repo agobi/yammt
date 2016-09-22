@@ -1,6 +1,6 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/money-app.html",
+  "shell": "src/yamtt-app.html",
   "fragments": [
     "src/money-transactions.html",
     "src/money-overview.html"

@@ -18,11 +18,11 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="money-transactions.html">
-<link rel="import" href="money-overview.html">
-<link rel="import" href="money-edit.html">
+<link rel="import" href="yamtt-trlist.html">
+<link rel="import" href="yamtt-overview.html">
+<link rel="import" href="yamtt-edit.html">
 
-<dom-module id="money-app">
+<dom-module id="yamtt-app">
   <template class="fullbleed vertical layout">
     <style>
       :host {
@@ -44,7 +44,7 @@
 
     <firebase-auth 
         id="auth"
-        app-name="money"
+        app-name="yamtt"
         user="{{user}}" 
         log="true"
         provider="google">
@@ -53,41 +53,42 @@
     <paper-drawer-panel class="flex">
       <paper-header-panel drawer>
         <paper-toolbar>
-          <div>Money</div>
+          <div>YAMTT</div>
         </paper-toolbar>
         <template is="dom-if" if="{{user}}">
           <h2>Hello [[user.displayName]]</h2>
           <paper-button on-tap="logout">Logout</paper-button>
+        </template>
+        <template is="dom-if" if="{{!user}}">
+          <paper-button on-tap="login">
+            <img src="../images/btn_google_signin_light_normal_web.png">
+          </paper-button>
         </template>
       </paper-header-panel>
 
       <paper-header-panel main>
         <paper-toolbar>
           <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+
           <paper-tabs class="fixed" selected="{{selected}}">
             <paper-tab>OVERVIEW</paper-tab>
             <paper-tab>TRANSACTIONS</paper-tab>
           </paper-tabs>
         </paper-toolbar>
 
-        <template is="dom-if" if="{{!user}}">
-          <paper-icon-button on-tap="login">
-            <img src="../images/btn_google_signin_light_normal_web.png">
-          </paper-icon-button>
-        </template>
 
         <template is="dom-if" if="{{user}}">
         <paper-fab icon="add" onclick="addDialog.open()"></paper-fab>
           <firebase-query
               id="query"
-              app-name="money"
+              app-name="yamtt"
               log="true"
               path="/transactions"
               data="{{dbdata}}">
           </firebase-query>
           <iron-pages selected="{{selected}}">
-            <money-overview dbdata="{{dbdata}}"></money-overview>
-            <money-transactions dbdata="{{dbdata}}"></money-transactions>
+            <yamtt-overview dbdata="{{dbdata}}"></yamtt-overview>
+            <yamtt-trlist dbdata="{{dbdata}}"></yamtt-trlist>
           </iron-pages>
         </template>
       </paper-header-panel>
@@ -96,7 +97,7 @@
     <paper-dialog id="addDialog">
       <h2>Add new transaction</h2>
       <div>
-        <money-edit settings="[[settings]]"></money-edit>
+        <yamtt-edit settings="[[settings]]"></yamtt-edit>
         <div class="buttons">
           <paper-button dialog-dismiss>Cancel</paper-button>
           <paper-button dialog-confirm autofocus on-tap="{{commit}}" tabindex=3>Add</paper-button>
@@ -109,7 +110,7 @@
   <script>
     Polymer({
 
-      is: 'money-app',
+      is: 'yamtt-app',
 
       properties: {
         dbdata: {
