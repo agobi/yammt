@@ -11,12 +11,18 @@
     "paper-listbox": "^1.1.2",
     "paper-dropdown-menu": "^1.4.1",
     "paper-item": "^1.2.1",
-    "paper-menu": "^1.2.2"
+    "paper-menu": "^1.2.2",
+    "paper-card": "PolymerElements/paper-card#^1.1.2",
+    "paper-fab": "PolymerElements/paper-fab#^1.2.0",
+    "paper-tabs": "PolymerElements/paper-tabs#^1.6.2"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
     "web-component-tester": "^4.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "resolutions": {
+    "paper-card": "^1.1.2"
   }
 }
