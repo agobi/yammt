@@ -1,25 +1,28 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-datatable/paper-datatable.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 
 <dom-module id="yamtt-trlist">
+  <style>
+    paper-card {
+      display: block;
+      margin: 1em;
+    }
+  </style>
   <template>
-
-      <paper-datatable data="{{dbdata}}" selectable multi-selection>
-        <paper-datatable-column header="Date" type="Date" property="timestamp" format-value="{{formatDate}}" sortable> </paper-datatable-column>
-        <paper-datatable-column header="From" type="String" property="from" sortable> </paper-datatable-column>
-        <paper-datatable-column header="To" type="String" property="to" sortable> </paper-datatable-column>
-        <paper-datatable-column header="Amount" property="amount" type="Number" align="right" sortable> </paper-datatable-column>
-        <paper-datatable-column header="Note" property="note" type="String" editable>
-          <template>
-            <paper-input value="{{value}}" no-label-float>
-          </template>
-        </paper-datatable-column>
-      </paper-datatable>
+    <template is='dom-repeat' items='[[days]]' sort="[[_compareString()]]" as="day">
+      <paper-card heading="[[day]]">
+      <template is='dom-repeat' items='[[dbdata]]' filter="[[dayfilter(day)]]" sort="[[_compareTimestamp()]]" as="tr" observe="timestamp">
+        <div class="card-content">
+          <span>[[renderDay(tr.timestamp)]]</span>
+          <span>[[tr.source]]</span>
+          <span>[[tr.target]]</span>
+          <span>[[tr.amount]]Ft</span>
+          <p>[[tr.note]]</p>
+        </div>
+      </template>
+      </paper-card>
+    </template>
   </template>
 
   <script>
@@ -27,17 +30,52 @@
       is: 'yamtt-trlist',
       properties: {
         dbdata: {
-          type: Array,
+          type: Object,
           notify: true
+        },
+        days: {
+          type: Array,
+          notify: true,
+          value: []
         }
       },
 
-      ready: function() {
-        this.formatDate= function(ts) {
-          var x = new Date(ts*1000).toLocaleString();
-          return x;
+      renderDay: function(x) { 
+        return new Date(x * 1000).toLocaleTimeString();
+      },
+
+      _compareString: function() {
+        return function(a, b) { return b.localeCompare(a); }
+      },
+
+      _compareTimestamp: function() { 
+        return function(a, b) { return b.timestamp-a.timestamp; }
+      },
+
+      dayfilter: function(day) {
+        return function(x) {
+          return new Date(x.timestamp *1000).toLocaleDateString() == day;
         }
       },
+
+      observers: [
+        'groupByDay(dbdata.*)',
+      ],
+
+      groupByDay: function(notify) {
+        let daystoRemove = new Set(this.days);
+        let dayIdx = {};
+
+        for(let x of notify.base) {
+          let day = new Date(x.timestamp * 1000).toLocaleDateString();
+          daystoRemove.delete(day);
+
+          if(this.days.indexOf(day) == -1)
+            this.push('days', day);
+        };
+
+        console.log("DAYS: ", this.days);
+      }
 
     });
   </script>
