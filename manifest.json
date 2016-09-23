@@ -3,5 +3,5 @@
   "short_name": "yamtt",
   "description": "Asset tracking",
   "start_url": "/",
-  "display": "standalone"
+  "display": "fullscreen"
 }
