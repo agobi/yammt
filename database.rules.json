@@ -1,0 +1,7 @@
+{
+  "rules": {
+    ".read": "'4HA362J7E3d2U5drFYPfc0AiUmM2' === auth.uid",
+    ".write": "'4HA362J7E3d2U5drFYPfc0AiUmM2' === auth.uid",
+    "transactions": {".indexOn": ["timestamp"]}
+  }
+}

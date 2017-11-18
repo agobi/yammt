@@ -1,26 +1,54 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
 
 <dom-module id="yamtt-trlist">
-  <style>
+  <style include="iron-flex">
     paper-card {
       display: block;
       margin: 1em;
     }
+
+    .card-content {
+      padding-top: 0;
+    }
+
+    .content-bar {
+      @apply(--layout-horizontal);
+    }
+
+    .content-bar div {
+      margin-right: 0.2em;
+    }
+
+    .content-bar div.total {
+      text-align: right;
+      font-weight: bold;
+      @apply(--layout-flex);
+    }
+
+    .card-content p {
+      margin-top: 0;
+      font-style: italic;
+    }
+
   </style>
   <template>
-    <template is='dom-repeat' items='[[days]]' sort="[[_compareString()]]" as="day">
-      <paper-card heading="[[day]]">
-      <template is='dom-repeat' items='[[dbdata]]' filter="[[dayfilter(day)]]" sort="[[_compareTimestamp()]]" as="tr" observe="timestamp">
-        <div class="card-content">
-          <span>[[renderDay(tr.timestamp)]]</span>
-          <span>[[tr.source]]</span>
-          <span>[[tr.target]]</span>
-          <span>[[tr.amount]]Ft</span>
-          <p>[[tr.note]]</p>
-        </div>
-      </template>
+    <template is='dom-repeat' items='[[days]]' sort="_compareDay" as="day">
+      <paper-card heading="[[day.name]]">
+      <div class="card-content">
+        <template is='dom-repeat' items='{{dbdata}}' filter="[[dayfilter(day)]]" sort="_compareTimestamp" as="tr" observe="timestamp">
+          <div class="content-bar">
+            <div>[[renderDay(tr.timestamp)]]</div>
+            <div>[[renderCategory(categories, tr.source)]]</div>
+            <div>[[renderCategory(categories, tr.target)]]</div>
+            <div class="total">[[tr.amount]]Ft</div>
+          </div>
+          <p contenteditable>{{tr.note}}</p>
+        </template>
+      </div>
       </paper-card>
     </template>
   </template>
@@ -30,31 +58,39 @@
       is: 'yamtt-trlist',
       properties: {
         dbdata: {
-          type: Object,
+          type: Array,
           notify: true
         },
         days: {
           type: Array,
           notify: true,
           value: []
+        },
+        categories: {
+          type: Array,
+          notify: true
+        }
+      },
+
+      renderCategory(categories, c) {
+        for(let x of categories) {
+          if(x.$key == c)
+            return x.name
         }
       },
 
       renderDay: function(x) { 
-        return new Date(x * 1000).toLocaleTimeString();
+        return new Date(x * 1000).toLocaleTimeString('en-US', { hour12: false });
       },
 
-      _compareString: function() {
-        return function(a, b) { return b.localeCompare(a); }
+      _compareDay: function(a, b) { 
+        return b.start - a.start;
       },
-
-      _compareTimestamp: function() { 
-        return function(a, b) { return b.timestamp-a.timestamp; }
-      },
+      _compareTimestamp: function(a, b) { return b.timestamp-a.timestamp; },
 
       dayfilter: function(day) {
         return function(x) {
-          return new Date(x.timestamp *1000).toLocaleDateString() == day;
+          return x.timestamp >= day.start && x.timestamp < day.start+24*3600;
         }
       },
 
@@ -63,20 +99,28 @@
       ],
 
       groupByDay: function(notify) {
+        days = this.days;
+        function hasDay(d) {
+          for(let x of days) {
+            if(x.start == d)
+              return true;
+          }
+          return false;
+        }
+
         let daystoRemove = new Set(this.days);
         let dayIdx = {};
 
         for(let x of notify.base) {
-          let day = new Date(x.timestamp * 1000).toLocaleDateString();
+          let day = new Date(x.timestamp * 1000)
+          let dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate()).getTime()/1000;
+          let dayString = day.toLocaleDateString('en-US', {weekday: 'short', month: 'long', day: 'numeric'})
           daystoRemove.delete(day);
 
-          if(this.days.indexOf(day) == -1)
-            this.push('days', day);
+          if(!hasDay(dayStart))
+            this.push('days', {name: dayString, start: dayStart});
         };
-
-        console.log("DAYS: ", this.days);
       }
-
     });
   </script>
 </dom-momodule>
